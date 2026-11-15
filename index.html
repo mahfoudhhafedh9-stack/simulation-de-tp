@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Travaux pratiques réseaux – Mahfoudh Hafedh | ISET Nabeul</title>
+<meta name="description" content="Portfolio de travaux pratiques réseaux (RSI3, ISET Nabeul) : MPLS, BGP, redistribution de routes, NAT, GRE, Frame Relay. Simulations interactives.">
+<style>
+:root{--bg:#f7f8fa;--surface:#fff;--ink:#0f172a;--muted:#5a6577;--line:#dfe3ea;--accent:#1d4ed8;--accent-soft:#eaf0fe;--on:#fff;
+--c-mpls:#b45309;--c-rout:#0f766e;--c-serv:#1d4ed8;--c-wan:#be185d;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1220;--surface:#111a2b;--ink:#e8eef7;--muted:#93a3b8;--line:#22314a;--accent:#7aa7ff;--accent-soft:#15233d;--on:#0b1220;--c-mpls:#f5b942;--c-rout:#2dd4bf;--c-serv:#60a5fa;--c-wan:#f472b6;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1220;--surface:#111a2b;--ink:#e8eef7;--muted:#93a3b8;--line:#22314a;--accent:#7aa7ff;--accent-soft:#15233d;--on:#0b1220;--c-mpls:#f5b942;--c-rout:#2dd4bf;--c-serv:#60a5fa;--c-wan:#f472b6;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;height:100%;scroll-padding-top:calc(72px + env(safe-area-inset-top,0px))}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;line-height:1.6;padding-bottom:env(safe-area-inset-bottom,0px)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 28px}
+nav{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+nav .wrap{display:flex;justify-content:space-between;align-items:center;height:64px;gap:16px}
+.brand{font-weight:700;text-decoration:none;color:var(--ink)}.brand span{color:var(--accent)}
+nav ul{display:flex;gap:26px;list-style:none;margin:0;padding:0}
+nav a.l{color:var(--muted);text-decoration:none;font-size:.95rem;font-weight:500}nav a.l:hover{color:var(--ink)}
+h1,h2{font-family:Georgia,"Times New Roman",serif;font-weight:700;letter-spacing:-.015em}
+.top{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.top::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:44px 44px;opacity:.55;-webkit-mask-image:linear-gradient(#000 40%,transparent);mask-image:linear-gradient(#000 40%,transparent)}
+.top .wrap{position:relative}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;padding:64px 0 40px}
+.badge{display:inline-block;font-size:.82rem;font-weight:600;color:var(--accent);background:var(--accent-soft);border:1px solid var(--line);padding:5px 14px;border-radius:99px;margin:0 0 20px}
+h1{font-size:clamp(2.4rem,5.2vw,3.9rem);line-height:1.06;margin:0 0 20px}
+h1 em{font-style:normal;color:var(--accent)}
+.lead{font-size:1.1rem;color:var(--muted);max-width:56ch;margin:0 0 28px}
+.btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-block;padding:12px 24px;border-radius:8px;font-weight:600;font-size:.97rem;text-decoration:none;background:var(--accent);color:var(--on);border:1px solid var(--accent)}
+.btn.ghost{background:var(--surface);color:var(--ink);border-color:var(--line)}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:0 0 56px}
+.facts div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.facts strong{display:block;font-family:Georgia,serif;font-size:1.6rem;line-height:1.2}
+.facts span{font-size:.85rem;color:var(--muted)}
+.mapbox{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 14px 40px rgba(15,23,42,.1)}
+.mapbox svg{display:block;width:100%;height:auto}
+.panel{border-top:1px solid var(--line);padding:16px 20px 20px}
+.pill{display:inline-block;font-size:.76rem;font-weight:700;padding:2px 10px;border-radius:99px;border:1px solid var(--col);color:var(--col)}
+.panel h3{margin:8px 0 2px;font-size:1.2rem}.panel p{margin:0 0 12px;color:var(--muted);font-size:.94rem}
+.panel .btn{padding:9px 18px;font-size:.92rem}
+.node{cursor:pointer}.node:focus-visible{outline:none}.node:focus-visible circle:nth-child(2){stroke:var(--ink);stroke-width:3}
+section{padding:64px 0 0}
+h2{font-size:1.8rem;margin:0 0 8px}
+.intro{color:var(--muted);margin:0 0 28px;max-width:62ch}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tab{padding:8px 16px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:.92rem;font-weight:600;cursor:pointer}
+.tab[aria-pressed="true"]{background:var(--accent);color:var(--on);border-color:var(--accent)}
+.tab small{opacity:.75;margin-left:4px}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.row{display:grid;grid-template-columns:64px 1fr 150px 160px;gap:20px;align-items:center;padding:20px 24px;border-top:1px solid var(--line);color:inherit;text-decoration:none;transition:background .15s}
+.row:first-child{border-top:0}.row:hover{background:var(--accent-soft)}
+.no{font-family:Georgia,serif;font-size:1.5rem;color:var(--accent);font-weight:700}
+.row h3{margin:0 0 2px;font-size:1.08rem}.row p{margin:0 0 8px;color:var(--muted);font-size:.93rem}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tags span{font-size:.75rem;padding:2px 9px;border-radius:4px;background:var(--bg);border:1px solid var(--line);color:var(--muted)}
+.theme{font-size:.85rem;font-weight:600;color:var(--muted)}
+.open{justify-self:end;font-weight:600;color:var(--accent);font-size:.93rem;white-space:nowrap}
+.themes{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.tc{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:22px}
+.tc h3{margin:0 0 4px;font-size:1.1rem}.tc .n{color:var(--accent);font-weight:700;font-size:.85rem}
+.tc p{margin:8px 0 0;color:var(--muted);font-size:.93rem}
+.about{display:grid;grid-template-columns:1.2fr 1fr;gap:40px}
+.about p{margin:0 0 14px;color:var(--muted)}
+.skills{display:flex;gap:8px;flex-wrap:wrap}
+.skills span{padding:6px 12px;border-radius:6px;background:var(--surface);border:1px solid var(--line);font-size:.88rem;font-weight:500}
+footer{margin-top:72px;border-top:1px solid var(--line);background:var(--surface)}
+footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:24px;padding-bottom:28px;color:var(--muted);font-size:.9rem}
+footer a{color:var(--accent);text-decoration:none;font-weight:600}
+a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+@media (max-width:860px){nav ul{display:none}.hero{grid-template-columns:1fr;gap:32px;padding:40px 0 28px}.facts{grid-template-columns:repeat(2,1fr)}.row{grid-template-columns:48px 1fr;gap:6px 14px;padding:18px}.row .theme,.row .open{grid-column:2;justify-self:start}.about{grid-template-columns:1fr;gap:24px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <a class="brand" href="#top">Mahfoudh <span>Hafedh</span></a>
+  <ul><li><a class="l" href="#tp">Travaux pratiques</a></li><li><a class="l" href="#themes">Thèmes</a></li><li><a class="l" href="#apropos">À propos</a></li></ul>
+</div></nav>
+<header class="top" id="top"><div class="wrap">
+  <div class="hero">
+    <div>
+      <span class="badge">Atelier Technologies WAN · RSI3 · ISET Nabeul</span>
+      <h1>Mes TP réseaux, <em>à rejouer</em> en un clic</h1>
+      <p class="lead">Recueil des travaux pratiques 2026–2027 : MPLS, routage dynamique, services réseau, tunnels et WAN. Choisissez un nœud sur la carte ou une ligne dans la liste, et la simulation s’ouvre dans votre navigateur.</p>
+      <div class="btns"><a class="btn" href="#tp">Consulter les TP</a><a class="btn ghost" href="https://github.com/mahfoudhhafedh9-stack" target="_blank" rel="noopener">Profil GitHub</a></div>
+    </div>
+    <div class="mapbox">
+      <svg id="map" viewBox="0 0 520 400" role="group" aria-label="Carte des TP par thème"></svg>
+      <div class="panel" id="panel"></div>
+    </div>
+  </div>
+  <div class="facts">
+    <div><strong id="f-n">0</strong><span>simulations interactives</span></div>
+    <div><strong id="f-t">0</strong><span>thèmes réseau</span></div>
+    <div><strong>RSI3</strong><span>3e année, ISET Nabeul</span></div>
+    <div><strong>2026–2027</strong><span>année universitaire</span></div>
+  </div>
+</div></header>
+<main class="wrap">
+  <section id="tp">
+    <h2>Travaux pratiques</h2>
+    <p class="intro">Sélectionnez un thème ou parcourez la liste complète. Un clic sur une ligne ouvre la simulation dans un nouvel onglet.</p>
+    <div class="tabs" id="tabs"></div>
+    <div class="list" id="list"></div>
+  </section>
+  <section id="themes">
+    <h2>Thèmes abordés</h2>
+    <p class="intro">Les TP couvrent le cœur de l’interconnexion de sites : du backbone d’un opérateur aux liaisons WAN.</p>
+    <div class="themes" id="tcards"></div>
+  </section>
+  <section id="apropos">
+    <h2>À propos</h2>
+    <div class="about">
+      <div>
+        <p>Je m’appelle Mahfoudh Hafedh, étudiant en 3e année de Technologie de l’Informatique, parcours Réseaux et Systèmes d’Information, à l’ISET de Nabeul.</p>
+        <p>Ces travaux pratiques ont été réalisés dans le cadre de l’atelier Technologies WAN. Chaque simulation reprend la configuration des équipements, les commandes saisies et les vérifications.</p>
+      </div>
+      <div>
+        <p style="margin-bottom:10px"><strong style="color:var(--ink)">Compétences mises en œuvre</strong></p>
+        <div class="skills" id="skills"></div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer><div class="wrap"><span>Mahfoudh Hafedh · ISET Nabeul · 2026–2027</span><a href="https://github.com/mahfoudhhafedh9-stack" target="_blank" rel="noopener">github.com/mahfoudhhafedh9-stack</a></div></footer>
+<script>
+// Pour ajouter un TP : copie une ligne de LABS, change le titre, la description, les mots-clés et le lien.
+var U = "https://mahfoudhhafedh9-stack.github.io/";
+var THEMES = {
+  mpls:{n:"MPLS", d:"Backbone d’opérateur, distribution de labels et VPN de niveau 3."},
+  rout:{n:"Routage", d:"Échange de routes entre systèmes autonomes et entre protocoles."},
+  serv:{n:"Services et tunnels", d:"Adressage dynamique, traduction d’adresses et encapsulation."},
+  wan:{n:"WAN", d:"Liaisons étendues et nuage Frame Relay."}
+};
+var LABS = [
+  {cat:"mpls", title:"MPLS, partie 1 : backbone", desc:"Mise en place du backbone MPLS et distribution des labels avec LDP.", tags:["MPLS","LDP","Backbone"], href:U+"tp1-mpls-simulation/"},
+  {cat:"mpls", title:"MPLS, partie 2", desc:"Suite du TP1 : vérification de la commutation de labels sur le backbone.", tags:["MPLS","Vérification"], href:U+"TP-MPLS-P-2/"},
+  {cat:"mpls", title:"VPN MPLS", desc:"Isolation des clients avec des VRF et échange de leurs routes en MP-BGP.", tags:["VRF","MP-BGP","EIGRP"], href:U+"tp2MPLS/HTML5/"},
+  {cat:"rout", title:"BGP", desc:"Sessions BGP entre systèmes autonomes et échange de routes.", tags:["eBGP","Systèmes autonomes"], href:U+"TP_BGP/"},
+  {cat:"rout", title:"Redistribution de routes", desc:"Communication entre OSPF, EIGRP et RIPv2 par redistribution.", tags:["OSPF","EIGRP","RIPv2"], href:U+"TP_redis_ospf_eigrp_rip/"},
+  {cat:"serv", title:"TP3 : DHCP et NAT", desc:"Distribution des adresses avec DHCP et traduction avec NAT.", tags:["DHCP","NAT"], href:U+"TP3_DHCP_NAT/"},
+  {cat:"serv", title:"TP4 : DHCP et NAT", desc:"Configuration du DHCP et du NAT, rejouée pas à pas.", tags:["DHCP","NAT"], href:U+"tp4/"},
+  {cat:"serv", title:"Tunnel GRE", desc:"Création d’un tunnel GRE entre deux routeurs et suivi de l’encapsulation.", tags:["GRE","Tunnel"], href:U+"TP4-GRE/"},
+  {cat:"wan", title:"Frame Relay de base", desc:"Configuration d’un nuage Frame Relay et liaison des sites distants.", tags:["Frame Relay","DLCI"], href:U+"tp6_framerelay1/"},
+  {cat:"wan", title:"Frame Relay avancé", desc:"Configuration avancée du Frame Relay.", tags:["Frame Relay"], href:U+"TP6bis_FrameRel/"}
+];
+var CV = {mpls:"--c-mpls", rout:"--c-rout", serv:"--c-serv", wan:"--c-wan"};
+var POS = {mpls:[110,95], rout:[410,95], serv:[110,305], wan:[410,305]};
+var NS = "http://www.w3.org/2000/svg", f = "all", sel = 0;
+function el(t, c, x){ var e = document.createElement(t); if(c) e.className = c; if(x != null) e.textContent = x; return e; }
+function sv(t, a){ var e = document.createElementNS(NS, t); for(var k in a) e.setAttribute(k, a[k]); return e; }
+function pad(n){ return n < 10 ? "0"+n : ""+n; }
+function cv(k){ return "var(" + CV[k] + ")"; }
+function count(k){ return LABS.filter(function(l){ return k === "all" || l.cat === k; }).length; }
+
+function drawMap(){
+  var m = document.getElementById("map"), cx = 260, cy = 200;
+  Object.keys(THEMES).forEach(function(k){
+    var p = POS[k], ids = [];
+    LABS.forEach(function(l,i){ if(l.cat === k) ids.push(i); });
+    m.appendChild(sv("line",{x1:cx,y1:cy,x2:p[0],y2:p[1],style:"stroke:var(--line)","stroke-width":2}));
+    var base = Math.atan2(p[1]-cy, p[0]-cx);
+    ids.forEach(function(i,j){
+      var a = base + (j-(ids.length-1)/2)*0.6, nx = p[0] + 80*Math.cos(a), ny = p[1] + 80*Math.sin(a);
+      m.appendChild(sv("line",{x1:p[0],y1:p[1],x2:nx,y2:ny,style:"stroke:var(--line)","stroke-width":1.5}));
+      var g = sv("g",{"class":"node",tabindex:0,role:"button","aria-label":"TP "+pad(i+1)+" : "+LABS[i].title,"data-i":i});
+      g.appendChild(sv("circle",{cx:nx,cy:ny,r:23,style:"fill:"+cv(k),opacity:0}));
+      g.appendChild(sv("circle",{cx:nx,cy:ny,r:15,style:"fill:"+cv(k)}));
+      var t = sv("text",{x:nx,y:ny+4,"text-anchor":"middle","font-size":11,"font-weight":700,style:"fill:var(--on)"}); t.textContent = pad(i+1);
+      g.appendChild(t);
+      g.addEventListener("click", function(){ pick(i); });
+      g.addEventListener("keydown", function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); pick(i); } });
+      m.appendChild(g);
+    });
+  });
+  Object.keys(THEMES).forEach(function(k){
+    var p = POS[k], w = THEMES[k].n.length*7.6 + 30;
+    m.appendChild(sv("rect",{x:p[0]-w/2,y:p[1]-15,width:w,height:30,rx:15,style:"fill:var(--surface);stroke:"+cv(k),"stroke-width":2}));
+    var t = sv("text",{x:p[0],y:p[1]+5,"text-anchor":"middle","font-size":13,"font-weight":700,style:"fill:var(--ink)"}); t.textContent = THEMES[k].n; m.appendChild(t);
+  });
+  m.appendChild(sv("circle",{cx:cx,cy:cy,r:34,style:"fill:var(--ink)"}));
+  var c0 = sv("text",{x:cx,y:cy+5,"text-anchor":"middle","font-size":15,"font-weight":800,style:"fill:var(--bg)"}); c0.textContent = "TP"; m.appendChild(c0);
+}
+function paintMap(){
+  var n = document.querySelectorAll("#map .node");
+  for(var i=0;i<n.length;i++) n[i].firstChild.setAttribute("opacity", +n[i].getAttribute("data-i") === sel ? 0.28 : 0);
+}
+function panel(){
+  var l = LABS[sel], p = document.getElementById("panel"); p.innerHTML = "";
+  p.style.setProperty("--col", cv(l.cat));
+  p.appendChild(el("span","pill","TP "+pad(sel+1)+" · "+THEMES[l.cat].n));
+  p.appendChild(el("h3","",l.title)); p.appendChild(el("p","",l.desc));
+  var a = el("a","btn","Lancer la simulation ↗"); a.href = l.href; a.target = "_blank"; a.rel = "noopener"; p.appendChild(a);
+}
+function pick(i){ sel = i; paintMap(); panel(); }
+function tabs(){
+  var b = document.getElementById("tabs"); b.innerHTML = "";
+  ["all"].concat(Object.keys(THEMES)).forEach(function(k){
+    var t = el("button","tab",k === "all" ? "Tous" : THEMES[k].n); t.type = "button"; t.setAttribute("aria-pressed", f === k);
+    t.appendChild(el("small","",count(k)));
+    t.addEventListener("click", function(){ f = k; tabs(); list(); });
+    b.appendChild(t);
+  });
+}
+function list(){
+  var box = document.getElementById("list"); box.innerHTML = "";
+  LABS.forEach(function(l,i){
+    if(f !== "all" && l.cat !== f) return;
+    var a = el("a","row"); a.href = l.href; a.target = "_blank"; a.rel = "noopener";
+    a.appendChild(el("div","no",pad(i+1)));
+    var m = el("div"); m.appendChild(el("h3","",l.title)); m.appendChild(el("p","",l.desc));
+    var tg = el("div","tags"); l.tags.forEach(function(x){ tg.appendChild(el("span","",x)); }); m.appendChild(tg);
+    a.appendChild(m); a.appendChild(el("div","theme",THEMES[l.cat].n)); a.appendChild(el("div","open","Ouvrir la simulation →"));
+    box.appendChild(a);
+  });
+}
+var tc = document.getElementById("tcards");
+Object.keys(THEMES).forEach(function(k){
+  var c = el("div","tc"); c.appendChild(el("span","n",count(k) + " TP"));
+  c.appendChild(el("h3","",THEMES[k].n)); c.appendChild(el("p","",THEMES[k].d)); tc.appendChild(c);
+});
+var sk = document.getElementById("skills");
+["MPLS / LDP","VPN MPLS (VRF, MP-BGP)","BGP","OSPF · EIGRP · RIPv2","Redistribution de routes","DHCP et NAT","Tunnels GRE","Frame Relay","Simulation réseau"].forEach(function(s){ sk.appendChild(el("span","",s)); });
+document.getElementById("f-n").textContent = LABS.length;
+document.getElementById("f-t").textContent = Object.keys(THEMES).length;
+tabs(); list(); drawMap(); paintMap(); panel();
+</script>
+</body>
+</html>
